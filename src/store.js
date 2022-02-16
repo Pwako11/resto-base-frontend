@@ -5,14 +5,14 @@ import currentUser from './reducers/currentUser.js';
 import loginForm from './reducers/loginForm.js';
 import signUpForm from './reducers/signupForm.js';
 import product from './reducers/product.js';
-import newProductForm from './reducers/newProductForm.js';
+import productForm from './reducers/productForm.js';
 
 const reducer = combineReducers({
     users: usersReducer,
     currentUser,  
-    loginForm,  
     signUpForm,
-    newProductForm,
+    loginForm,  
+    productForm,  
     product,  
   })
 
