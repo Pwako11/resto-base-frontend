@@ -10,10 +10,15 @@ import Home from "./components/Home.js";
 import Logout from './components/Logout';
 import Signup from './components/Signup.js';
 import NavBar from './components/NavBar.js';
+import Products from './components/Product.js';
+import ProductCard from './components/ProductCard.js';
 import MainContainer from './components/MainContainer.js';
 import { connect } from 'react-redux';
 import { getCurrentUser } from './actions/currentUser.js';
 import { getProducts } from './actions/product.js';
+import {preSetFormDataForEdit} from './actions/productForm.js';
+import ProductEditFormWrapper from "./components/ProductEditFormWrapper.js";
+import ProductNewFormWrapper from "./components/ProductNewFormWrapper.js";
 
 class App extends React.Component{
 
@@ -25,7 +30,7 @@ class App extends React.Component{
   render(){
 
     const{currentUser, loggedIn, products} = this.props
-
+  
     return (
       <div className="App">
         <header className="App-header">
@@ -39,13 +44,20 @@ class App extends React.Component{
               <Route exact path="/login" component= {Login} />
               <Route exact path="/logout" component= {Logout} />
               <Route exact path="/signup" component= {Signup } />
-              {/* <Route exact path="/products" component= {products} /> */}
-              {/* <Route exact path="/products/new" component= {NewProductForm } /> */}
-              {/* <Route exact path="/products/:id" render= {props =>{ */}
-                  {/* const product =  products.find(rec => rec.id === props.match.params.id)           */}
-                  {/* return<ProductCard product={product} {...props}/> */}
-                  {/* } */}
-                {/* }/> */}
+              <Route exact path="/products" component= {Products} />
+              <Route exact path="/products/new" component= {ProductNewFormWrapper } />
+              <Route exact path="/products/:id" render= {props =>{
+                  const product =  products.find(rec => rec.id === props.match.params.id)
+                  return<ProductCard product={product} {...props}/>
+                  } 
+                }/>
+              <Route exact path='/products/:id/edit' render={props =>{
+                const product =  products.find(rec => rec.id === props.match.params.id)
+                console.log("in edit route - product", product)          
+                product && preSetFormDataForEdit(product)
+                return<ProductEditFormWrapper product={product}{...props}/>
+                }
+              }/>
             </Switch>
           </div>
         </header>
@@ -56,8 +68,6 @@ class App extends React.Component{
 }
 
 const mapStateToProps = state =>{
-
-  console.log(state)
 
   return{
     currentUser: state.currentUser,
