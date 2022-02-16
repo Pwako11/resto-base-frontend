@@ -3,11 +3,10 @@ export default function product(state = [], action) {
         case "SET_MY_PRODUCT":
             return action.product
         case "ADD_PRODUCT":
-                return state.concat(action.product)
+            return state.concat(action.product)
         case "CLEAR_PRODUCT":
             return []
         case "UPDATE_PRODUCT":
-            console.log("in update Product Action is ", action.product)
             return state.map(product => product.id === action.product.id? action.product : product)
         case "DELETE_PRODUCT":
             return state.filter(product => product.id === action.productId ? false : true)
