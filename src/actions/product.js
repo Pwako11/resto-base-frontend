@@ -1,5 +1,4 @@
-import { resetProductForm } from './newProductForm.js'
-
+import { resetProductForm } from './productForm.js'
 
 //synchronous action creators 
 
@@ -10,37 +9,39 @@ export const setProduct = product =>{
     }
 }
 
-export const addProduct = Product =>{
+export const addProduct = product =>{
     return{
         type: "ADD_PRODUCT",
-        Product
+        product
     }
 }
 
-export const updateProductSuccess = Product => {
+export const updateProductSuccess = product => {
     return{
         type: "UPDATE_PRODUCT",
-        Product
+        product
     }
 }
 
 export const clearProduct = () =>{
     return {
-        type: "CLEAR_CURRENT_PRODUCT"
+        type: "CLEAR_PRODUCT"
     }
 }
 
-export const deleteProductSuccess = Product => {
+export const deleteProductSuccess = product => {
     return{
         type: "DELETE_PRODUCT",
-        Product
+        product
     }
 }
 
 //asynchronous action creators
 export const getProducts = () =>{
+
+
     return dispatch =>{
-        return fetch("http://localhost:3006/api/v1/Products", {
+        return fetch("http://localhost:3006/api/v1/products", {
             credentials: "include", 
             method: "GET", 
             headers:{
@@ -52,7 +53,7 @@ export const getProducts = () =>{
             if (response.error){
                 alert(response.error)
             }else{
-                dispatch(setProduct(response.data))        
+                dispatch(setProduct(response.data))      
             }
         })
         .catch(console.log)
@@ -60,8 +61,9 @@ export const getProducts = () =>{
 }
 
 
-export const createProduct = (productDetails, history) => {
+export const createProduct = (productDetails, products, history) => {
     let newData;
+    let productId;
 
     return dispatch => {
 
@@ -81,13 +83,55 @@ export const createProduct = (productDetails, history) => {
       })
         .then(response => response.json())
         .then(response => {
-          if (response.error) {
-            alert(response.error)
-          } else {
-                newData = response.data
-                dispatch(setProduct(response.data));
-                dispatch(resetProductForm());
-                history.push(`/`)
+            if (response.error) {
+                alert(response.error)
+            } else {
+                newData = response.data;
+                productId = newData.id;
+            }    
+            return dispatch(addProduct(response))
+        }).then(()=>{
+            dispatch(setProduct([...products, newData]));
+        }).then(()=>{
+            dispatch(resetProductForm());
+        }).then(()=>{
+            window.alert("Your product was successfull added")
+            return productId
+        })
+        .catch(console.log)
+    }
+}
+
+export const updateProduct = (productData, product) => {
+   
+    let updatedProduct;
+    const productId = product.id
+    
+    return dispatch => {
+        const setDataTransfer ={
+            product: {
+                name: productData.name,
+                price: productData.price,
+                user_id: productData.user_id,
+                description: productData.description
+            }
+        }
+          
+        return fetch(`http://localhost:3006/api/v1/products/${productId}`, {
+            credentials: "include",
+            method: "PATCH",
+            headers:{
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(setDataTransfer)
+            })
+            .then( response => response.json())
+            .then(response =>{
+            updatedProduct = response.data
+            if(response.error){
+                alert(response.error)
+            }else{
+                dispatch(updateProductSuccess(updatedProduct))
             }
         })
         .catch(console.log)
@@ -95,6 +139,7 @@ export const createProduct = (productDetails, history) => {
 }
 
 export const deleteProduct = (products, product, history) => {
+    
     let updatedProducts; 
 
     const productId = product.id 
