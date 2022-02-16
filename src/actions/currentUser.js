@@ -1,7 +1,6 @@
 import { resetLoginForm } from "./loginForm.js"
 import { resetSignupForm } from "./signupForm.js"
-// import { getProducts } from "./products.js"
-// import { clearProducts } from "./products.js"
+import { clearProduct } from "./product.js"
 
 
 //synchronous action creators 
@@ -96,9 +95,9 @@ export const getCurrentUser = () =>{
 
 export const logout = () =>{
     return dispatch =>{
-     dispatch(clearCurrentUser())
-    //  dispatch(clearProduct())
-     return fetch("http://localhost:3006/api/v1/logout", {
+        dispatch(clearCurrentUser())
+        dispatch(clearProduct())
+        return fetch("http://localhost:3006/api/v1/logout", {
          credentials: "include",
          method: "DELETE"
          })
