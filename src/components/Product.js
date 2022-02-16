@@ -13,19 +13,15 @@ const Products = ({products, history}) => {
     };
 
 
-    const productHeading = path ==="/products" ? <h5>Here is your product list. Select a product for more options
-    </h5> : "" ;
+    const productHeading = path ==="/products" ? <h5>Here is your product list. Select a product for more options</h5> : "" ;
     
     const productCards = products.length > 0 ?  
-     products.map(d => (<li>
-         <Link key={p.id} to ={`/products/${p.id}`}>{p.attributes.name} </Link><br/>
-     </li>))  : null
+     products.map(p => (<li><Link key={p.id} to ={`/products/${p.id}`}>{p.attributes.name} </Link><br/></li>))  : null
 
     return(
         <div className="products">
             {productHeading}
             <ol>
-
                 {productCards}
             </ol>
         </div>
